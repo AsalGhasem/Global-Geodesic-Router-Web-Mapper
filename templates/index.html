@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Geodesic Calculator</title>
+    <style>
+        body { background-color: #2b2b2b; color: #e0e0e0; font-family: sans-serif; margin: 0; padding: 20px; }
+        .container { max-width: 1000px; margin: auto; }
+        h1 { color: #4e9a06; text-align: center; }
+        .form-box { text-align: center; margin-bottom: 30px; }
+        select { background: #444; color: white; border: 1px solid #4e9a06; padding: 10px; border-radius: 5px; }
+        button { background: #2d5a27; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; }
+        button:hover { background: #4e9a06; }
+        
+        .display-area { display: flex; justify-content: space-around; align-items: center; background: #333; padding: 20px; border-radius: 15px; border: 1px solid #444; }
+        .card { text-align: center; width: 40%; }
+        .card img { width: 200px; height: 120px; object-fit: cover; border: 3px solid #4e9a06; border-radius: 10px; }
+        
+        .results-text { background: #222; padding: 15px; margin-top: 20px; border-radius: 10px; border-left: 5px solid #4e9a06; }
+        .map-container { margin-top: 30px; border: 2px solid #4e9a06; border-radius: 15px; overflow: hidden; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Global Geodesic Search</h1>
+        
+        <div class="form-box">
+            <form method="POST">
+                <select name="capital">
+                    {% for c in caps %}
+                    <option value="{{ c }}" {% if sel == c %}selected{% endif %}>{{ c }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Calculate Path</button>
+            </form>
+        </div>
+
+        {% if data %}
+        <div class="display-area">
+            <div class="card">
+                <img src="/static/images/Iran.jpg" alt="Iran">
+                <h3>Tehran (Origin)</h3>
+            </div>
+            <div style="font-size: 40px; color: #4e9a06;">➔</div>
+            <div class="card">
+                <img src="/static/images/{{ data.country }}.jpg" alt="{{ data.country }}">
+                <h3>{{ sel }} (Target)</h3>
+            </div>
+        </div>
+
+        <div class="results-text">
+            <p><strong>Calculated Coordinates:</strong> φ: {{ "%.4f"|format(data.phi) }}°, λ: {{ "%.4f"|format(data.lam) }}°</p>
+            <p><strong>Geodetic Distance (s):</strong> {{ "%.4f"|format(data.distance / 1000) }} km</p>
+            <p><strong>Azimuth (α):</strong> {{ "%.4f"|format(data.azimuth) }}°</p>
+            <p><strong>Error:</strong> {{ "%.4f"|format(data.err) }}°</p>
+        </div>
+
+        <div class="map-container">
+            {{ map_html|safe }}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
